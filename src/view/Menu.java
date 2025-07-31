@@ -30,6 +30,7 @@ public class Menu {
         System.out.println("[0] - Exit");
         System.out.print("Choose an option: ");
         int optionMain = sc.nextInt();
+        sc.nextLine();
 
         switch (optionMain){
             case 1 -> createAccount();
@@ -60,7 +61,7 @@ public class Menu {
         Account account = new Account(1, agency, client, randomBalance());
         bankingSystem.addAccount(account);
 
-        
+
 
     }
 
