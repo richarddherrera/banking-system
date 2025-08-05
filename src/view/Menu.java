@@ -1,8 +1,9 @@
 package view;
 
+import Utils.Formatter;
 import enums.AgencyLocality;
 import enums.Bank;
-import exceptions.MainMenuException;
+import exceptions.*;
 import model.Account;
 import model.Agency;
 import model.Client;
@@ -19,10 +20,11 @@ public class Menu {
     Scanner sc = new Scanner(System.in);
     BankingSystem bankingSystem = new BankingSystem();
     Validator validator = new Validator();
+    Formatter formatter = new Formatter();
 
     public void showMainMenu() {
         boolean run = true;
-        while (run){
+        while (run) {
             try {
                 System.out.println("\n=== BANKING MENU ===");
                 System.out.println("[1] - Create new account");
@@ -34,7 +36,7 @@ public class Menu {
                 System.out.println("[0] - Exit");
                 System.out.print("Choose an option: ");
                 String optionString = sc.nextLine().trim();
-
+                System.out.println();
                 int optionMain = validator.validatorMainMenu(optionString);
 
                 switch (optionMain) {
@@ -43,7 +45,7 @@ public class Menu {
                     case 0 -> run = false;
                 }
 
-            }catch (MainMenuException e){
+            } catch (MainMenuException e) {
                 System.out.println(e.getMessage());
             }
         }
@@ -51,19 +53,55 @@ public class Menu {
 
 
     public void createAccount() {
+        boolean run = true;
+        String name = null;
 
-        System.out.print("Enter your name: ");
-        String name = sc.nextLine();
+        while (run) {
+            try {
+                System.out.print("Enter your name: ");
+                name = validator.validatorAccountName(formatter.formatterString(sc.nextLine()));
 
-        System.out.print("Enter your CPF (11 digits): ");
-        String cpf = sc.nextLine();
+                run = false;
+            } catch (AccountNameException e) {
+                System.out.println(e.getMessage());
+            } catch (Exception e) {
+                System.out.println("Error unexpected!");
+            }
+        }
 
-        System.out.print("Enter your date of birth: ");
-        String dateOfBirthString = sc.nextLine();
-        LocalDate dateOfBirth = LocalDate.parse(dateOfBirthString, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+        run = true;
+        String cpf = null;
+        while (run) {
+            try {
+                System.out.print("Enter your CPF (11 digits): ");
+                cpf = validator.validatorAccountCpf(sc.nextLine());
+
+                run = false;
+            } catch (AccountCpfException e) {
+                System.out.println(e.getMessage());
+            } catch (Exception e) {
+                System.out.println("Error unexpected!");
+            }
+
+        }
+
+        run = true;
+
+        LocalDate dateOfBirth = null;
+        while (run){
+            try {
+                System.out.print("Enter your date of birth (yyyy-MM-dd): ");
+                String dateOfBirthString = sc.nextLine();
+
+                dateOfBirth = validator.validatorBirth(dateOfBirthString);
+
+                run = false;
+            }catch (AccountBirthException e){
+                System.out.println(e.getMessage());
+            }
+        }
 
         Client client = new Client(name, cpf, dateOfBirth);
-        System.out.println("Client created! ");
 
         Agency agency = new Agency(selectBank(), selectAgencyLocality());
         numberAgency(agency);
@@ -72,31 +110,27 @@ public class Menu {
         Account account = new Account(1, agency, client, randomBalance());
         bankingSystem.addAccount(account);
 
-
     }
 
     public Bank selectBank() {
-        System.out.println("CHOOSE YOUR BANK");
-        System.out.println("[1] - ITAÚ INIBANCO");
-        System.out.println("[2] - BRADESCO");
-        System.out.println("[3] - SANTANDER");
+        boolean run = true;
+        Bank bank = null;
+        while (run){
+            try {
+                System.out.println("CHOOSE YOUR BANK");
+                System.out.println("[1] - ITAÚ UNIBANCO");
+                System.out.println("[2] - BRADESCO");
+                System.out.println("[3] - SANTANDER");
+                System.out.print("Choose an option: ");
 
-        int option = sc.nextInt();
+                bank = validator.validatorBank(sc.nextLine());
 
-
-        Bank optionBank = null;
-        switch (option) {
-            case 1 -> {
-                optionBank = Bank.ITAU;
-            }
-            case 2 -> {
-                optionBank = Bank.BRADESCO;
-            }
-            case 3 -> {
-                optionBank = Bank.SANTANDER;
+                run = false;
+            }catch (AgencyBankException e){
+                System.out.println(e.getMessage());
             }
         }
-        return optionBank;
+        return bank;
     }
 
     public AgencyLocality selectAgencyLocality() {
