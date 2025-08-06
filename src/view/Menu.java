@@ -107,7 +107,7 @@ public class Menu {
         numberAgency(agency);
         System.out.println("Agency created! ");
 
-        Account account = new Account(1, agency, client, randomBalance());
+        Account account = new Account(1, agency, client, initialDeposit());
         bankingSystem.addAccount(account);
 
     }
@@ -174,11 +174,23 @@ public class Menu {
 
     }
 
-    public Double randomBalance() {
-        Random random = new Random();
-        Double randomBalance = random.nextDouble(10.000);
-        return randomBalance;
-    }
+    public Double initialDeposit(){
 
+        String option = null;
+        boolean run = true;
+        while (run){
+            try {
+                System.out.println("Do you want to make an initial deposit now?");
+                System.out.println("[1] - YES");
+                System.out.println("[2] - NO");
+                System.out.print("Choose an option: ");
+                option = sc.nextLine();
+            }catch (AccountInitialDepositException e){
+                System.out.println(e.getMessage());
+            }
+        }
+
+        return validator.validatorInitialDeposit(option);
+    }
 
 }
