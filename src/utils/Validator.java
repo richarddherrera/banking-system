@@ -181,34 +181,36 @@ public class Validator {
             while (run){
                 try {
                     System.out.print("Enter initial deposit amount:");
-                    amount = validatorAmount(sc.nextDouble());
+                    amount = validatorAmount(sc.nextLine());
 
                     run = false;
-                }catch (AccountInitialDepositException e){
+                }catch (AccountAmountException e){
                     System.out.println(e.getMessage());
                 }
             }
 
+        }else {
+            amount = validatorAmount("0");
         }
 
         return amount;
     }
 
     // Validar a quantia deposito
-    public Double validatorAmount(Double amount){
-
-        String amountString = amount.toString();
+    public Double validatorAmount(String amountString){
 
         if(amountString.isBlank()){
             throw new AccountAmountException("\n ⚠ The amount cannot be empty or null! \n");
         }
 
         if (!amountString.matches("^\\d+$")){
-            throw new AccountInitialDepositException("\n ⚠ The amount cannot contain letters or symbols! \n") ;
+            throw new AccountAmountException("\n ⚠ The amount cannot contain letters or symbols! \n") ;
         }
 
+        double amount = Double.parseDouble(amountString);
+
         if (amount < 0){
-            throw new AccountInitialDepositException("\n ⚠ The amount cannot be less than 0! \n");
+            throw new AccountAmountException("\n ⚠ The amount cannot be less than 0! \n");
         }
 
         return amount;

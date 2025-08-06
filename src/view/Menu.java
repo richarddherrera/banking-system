@@ -1,6 +1,6 @@
 package view;
 
-import Utils.Formatter;
+import utils.Formatter;
 import enums.AgencyLocality;
 import enums.Bank;
 import exceptions.*;
@@ -8,10 +8,9 @@ import model.Account;
 import model.Agency;
 import model.Client;
 import service.BankingSystem;
-import Utils.Validator;
+import utils.Validator;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -21,6 +20,8 @@ public class Menu {
     BankingSystem bankingSystem = new BankingSystem();
     Validator validator = new Validator();
     Formatter formatter = new Formatter();
+    Random random = new Random();
+
 
     public void showMainMenu() {
         boolean run = true;
@@ -41,6 +42,15 @@ public class Menu {
 
                 switch (optionMain) {
                     case 1 -> createAccount();
+                    case 2 -> {
+                        if (bankingSystem.lessTwo() == 1){
+                            bankingSystem.listAccounts();
+                        }
+                    }
+                    case 3 -> bankingSystem.listAccounts();
+                    case 4 -> bankingSystem.listAccounts();
+                    case 5 -> bankingSystem.listAccounts();
+                    case 6 -> bankingSystem.listAccounts();
 
                     case 0 -> run = false;
                 }
@@ -105,9 +115,8 @@ public class Menu {
 
         Agency agency = new Agency(selectBank(), selectAgencyLocality());
         numberAgency(agency);
-        System.out.println("Agency created! ");
 
-        Account account = new Account(1, agency, client, initialDeposit());
+        Account account = new Account(random.nextInt(999) + 100, agency, client, initialDeposit());
         bankingSystem.addAccount(account);
 
     }
@@ -117,7 +126,7 @@ public class Menu {
         Bank bank = null;
         while (run){
             try {
-                System.out.println("CHOOSE YOUR BANK");
+                System.out.println("\nCHOOSE YOUR BANK");
                 System.out.println("[1] - ITAÚ UNIBANCO");
                 System.out.println("[2] - BRADESCO");
                 System.out.println("[3] - SANTANDER");
@@ -176,21 +185,23 @@ public class Menu {
 
     public Double initialDeposit(){
 
-        String option = null;
         boolean run = true;
+        Double amount = null;
         while (run){
             try {
-                System.out.println("Do you want to make an initial deposit now?");
+                System.out.println("\nDo you want to make an initial deposit now?");
                 System.out.println("[1] - YES");
                 System.out.println("[2] - NO");
                 System.out.print("Choose an option: ");
-                option = sc.nextLine();
+                amount = validator.validatorInitialDeposit(sc.nextLine());
+
+                run = false;
             }catch (AccountInitialDepositException e){
                 System.out.println(e.getMessage());
             }
         }
 
-        return validator.validatorInitialDeposit(option);
+        return amount;
     }
 
 }
