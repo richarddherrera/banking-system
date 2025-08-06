@@ -49,10 +49,17 @@ public class Agency {
 
     @Override
     public String toString() {
-        return "Agency{" +
-                "bank=" + bank +
-                ", locality='" + agencyLocality + '\'' +
-                ", number='" + number + '\'' +
-                '}';
+        return String.format(
+                "+----------------+---------------------------+\n" +
+                        "| Field          | Value                     |\n" +
+                        "+----------------+---------------------------+\n" +
+                        "| Bank           | %-25s |\n" +
+                        "| Locality       | %-25s |\n" +
+                        "| Number         | %-25s |\n" +
+                        "+----------------+---------------------------+",
+                bank, agencyLocality, number
+        );
     }
+
+
 }

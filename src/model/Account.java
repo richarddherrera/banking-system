@@ -50,11 +50,26 @@ public class Account {
 
     @Override
     public String toString() {
-        return "Account{" +
-                "number='" + number + '\'' +
-                ", agency=" + agency +
-                ", client=" + client +
-                ", balance=" + balance +
-                '}';
+        return String.format(
+                "\n+--------+---------+------------------+---------------+------------------------------+--------------+-------------+---------------+\n" +
+                        "| Number | Balance | Bank             | Agency Number | Locality                     | Client Name  | CPF         | Date of Birth |\n" +
+                        "+--------+---------+------------------+---------------+------------------------------+--------------+-------------+---------------+\n" +
+                        "| %-6s | %-7.2f | %-16s | %-13s | %-28s | %-12s | %-11s | %-13s |\n" +
+                        "+--------+---------+------------------+---------------+------------------------------+--------------+-------------+---------------+",
+                number,
+                balance,
+                agency.getBank(),
+                agency.getNumber(),
+                agency.getAgencyLocality(),
+                client.getName(),
+                client.getCpf(),
+                client.getDataOfBirth()
+        );
     }
+
 }
+
+
+
+
+

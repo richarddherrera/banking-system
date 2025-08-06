@@ -42,10 +42,17 @@ public class Client {
 
     @Override
     public String toString() {
-        return "Client{" +
-                "name='" + name + '\'' +
-                ", cpf='" + cpf + '\'' +
-                ", dataOfBirth=" + dataOfBirth +
-                '}';
+        return String.format(
+                "+----------------+---------------------------+\n" +
+                        "| Field          | Value                     |\n" +
+                        "+----------------+---------------------------+\n" +
+                        "| Name           | %-25s |\n" +
+                        "| CPF            | %-25s |\n" +
+                        "| Date of Birth  | %-25s |\n" +
+                        "+----------------+---------------------------+",
+                name, cpf, dataOfBirth
+        );
     }
+
+
 }
