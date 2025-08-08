@@ -1,5 +1,6 @@
 package view;
 
+import service.AccountService;
 import utils.Formatter;
 import enums.AgencyLocality;
 import enums.Bank;
@@ -21,6 +22,7 @@ public class Menu {
     Validator validator = new Validator();
     Formatter formatter = new Formatter();
     Random random = new Random();
+    AccountService accountService = new AccountService();
 
 
     public void showMainMenu() {
@@ -43,11 +45,15 @@ public class Menu {
                 switch (optionMain) {
                     case 1 -> createAccount();
                     case 2 -> {
-                        if (bankingSystem.lessTwo() == 1){
+                        if (bankingSystem.lessTwo() == false) {
                             bankingSystem.listAccounts();
                         }
                     }
-                    case 3 -> bankingSystem.listAccounts();
+                    case 3 -> {
+                        if (bankingSystem.lessTwo() == false) {
+                            menuDeposit();
+                        }
+                    }
                     case 4 -> bankingSystem.listAccounts();
                     case 5 -> bankingSystem.listAccounts();
                     case 6 -> bankingSystem.listAccounts();
@@ -98,7 +104,7 @@ public class Menu {
         run = true;
 
         LocalDate dateOfBirth = null;
-        while (run){
+        while (run) {
             try {
                 System.out.print("Enter your date of birth (yyyy-MM-dd): ");
                 String dateOfBirthString = sc.nextLine();
@@ -106,7 +112,7 @@ public class Menu {
                 dateOfBirth = validator.validatorBirth(dateOfBirthString);
 
                 run = false;
-            }catch (AccountBirthException e){
+            } catch (AccountBirthException e) {
                 System.out.println(e.getMessage());
             }
         }
@@ -124,7 +130,7 @@ public class Menu {
     public Bank selectBank() {
         boolean run = true;
         Bank bank = null;
-        while (run){
+        while (run) {
             try {
                 System.out.println("\nCHOOSE YOUR BANK");
                 System.out.println("[1] - ITAÚ UNIBANCO");
@@ -135,7 +141,7 @@ public class Menu {
                 bank = validator.validatorBank(sc.nextLine());
 
                 run = false;
-            }catch (AgencyBankException e){
+            } catch (AgencyBankException e) {
                 System.out.println(e.getMessage());
             }
         }
@@ -183,11 +189,11 @@ public class Menu {
 
     }
 
-    public Double initialDeposit(){
+    public Double initialDeposit() {
 
         boolean run = true;
         Double amount = null;
-        while (run){
+        while (run) {
             try {
                 System.out.println("\nDo you want to make an initial deposit now?");
                 System.out.println("[1] - YES");
@@ -196,12 +202,41 @@ public class Menu {
                 amount = validator.validatorInitialDeposit(sc.nextLine());
 
                 run = false;
-            }catch (AccountInitialDepositException e){
+            } catch (AccountInitialDepositException e) {
                 System.out.println(e.getMessage());
             }
         }
 
         return amount;
     }
+
+    public void menuDeposit() {
+        Account account = null;
+        boolean run = true;
+        while (run) {
+            try {
+                bankingSystem.listAccounts();
+                System.out.print("\nEnter the account number you wish to deposit an amount into: ");
+                account = validator.validatorNumber(sc.nextLine(), bankingSystem);
+
+                run = false;
+            } catch (AccountNumberException e) {
+                System.out.println(e.getMessage());
+            }
+        }
+
+        run = true;
+        while (run){
+            try {
+                System.out.print("Enter the deposit amount: ");
+                accountService.deposit(account, validator.validatorAmount(sc.nextLine()));
+
+                run = false;
+            }catch (AccountAmountException e){
+                System.out.println(e.getMessage());
+            }
+        }
+    }
+
 
 }

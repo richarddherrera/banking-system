@@ -2,6 +2,8 @@ package utils;
 
 import enums.Bank;
 import exceptions.*;
+import model.Account;
+import service.BankingSystem;
 
 import java.time.DateTimeException;
 import java.time.LocalDate;
@@ -197,7 +199,7 @@ public class Validator {
     }
 
     // Validar a quantia deposito
-    public Double validatorAmount(String amountString){
+    public Double validatorAmount(String amountString) throws AccountAmountException{
 
         if(amountString.isBlank()){
             throw new AccountAmountException("\n ⚠ The amount cannot be empty or null! \n");
@@ -215,4 +217,31 @@ public class Validator {
 
         return amount;
     }
-}
+
+    public Account validatorNumber(String numberAccount, BankingSystem bankingSystem)throws AccountNumberException{
+
+        if (numberAccount.isBlank()){
+            throw new AccountNumberException("\n ⚠ The number account cannot be empty or null! \n");
+        }
+
+        if (!numberAccount.matches("^\\d+$")){
+            throw new AccountNumberException("\n ⚠ The number account cannot contain letters or symbols! \n");
+        }
+
+        int numberAccountInt = Integer.parseInt(numberAccount);
+
+        Account account = bankingSystem.findByAccountNumber(numberAccountInt);
+
+        if (account == null){
+            throw new AccountNumberException("\n ⚠ The account was not found! \n");
+        }
+
+        return account;
+
+    }
+
+
+
+    }
+
+
