@@ -54,7 +54,11 @@ public class Menu {
                             menuDeposit();
                         }
                     }
-                    case 4 -> bankingSystem.listAccounts();
+                    case 4 -> {
+                        if (bankingSystem.lessTwo() == false) {
+                            menuWithdraw();
+                        }
+                    }
                     case 5 -> bankingSystem.listAccounts();
                     case 6 -> bankingSystem.listAccounts();
 
@@ -233,6 +237,36 @@ public class Menu {
 
                 run = false;
             }catch (AccountAmountException e){
+                System.out.println(e.getMessage());
+            }
+        }
+    }
+
+    public void menuWithdraw(){
+        Account account = null;
+        boolean run = true;
+        while (run) {
+            try {
+                bankingSystem.listAccounts();
+                System.out.print("\nEnter the account number you wish to withdraw an amount into: ");
+                account = validator.validatorNumber(sc.nextLine(), bankingSystem);
+
+                run = false;
+            } catch (AccountNumberException e) {
+                System.out.println(e.getMessage());
+            }
+        }
+
+        run = true;
+        while (run){
+            try {
+                System.out.print("Enter the withdraw amount: ");
+                accountService.withdraw(account, validator.validatorAmount(sc.nextLine()));
+
+                run = false;
+            }catch (AccountAmountException e){
+                System.out.println(e.getMessage());
+            }catch (AccountWithdrawException e){
                 System.out.println(e.getMessage());
             }
         }
