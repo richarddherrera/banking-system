@@ -35,7 +35,6 @@ public class Menu {
                 System.out.println("[3] - Deposit");
                 System.out.println("[4] - Withdraw");
                 System.out.println("[5] - Transfer");
-                System.out.println("[6] - View statement");
                 System.out.println("[0] - Exit");
                 System.out.print("Choose an option: ");
                 String optionString = sc.nextLine().trim();
@@ -59,8 +58,11 @@ public class Menu {
                             menuWithdraw();
                         }
                     }
-                    case 5 -> bankingSystem.listAccounts();
-                    case 6 -> bankingSystem.listAccounts();
+                    case 5 -> {
+                        if (bankingSystem.lessTwo() == false) {
+                            transfer();
+                        }
+                    }
 
                     case 0 -> run = false;
                 }
@@ -230,19 +232,19 @@ public class Menu {
         }
 
         run = true;
-        while (run){
+        while (run) {
             try {
                 System.out.print("Enter the deposit amount: ");
                 accountService.deposit(account, validator.validatorAmount(sc.nextLine()));
 
                 run = false;
-            }catch (AccountAmountException e){
+            } catch (AccountAmountException e) {
                 System.out.println(e.getMessage());
             }
         }
     }
 
-    public void menuWithdraw(){
+    public void menuWithdraw() {
         Account account = null;
         boolean run = true;
         while (run) {
@@ -258,17 +260,55 @@ public class Menu {
         }
 
         run = true;
-        while (run){
+        while (run) {
             try {
                 System.out.print("Enter the withdraw amount: ");
                 accountService.withdraw(account, validator.validatorAmount(sc.nextLine()));
 
                 run = false;
-            }catch (AccountAmountException e){
+            } catch (AccountAmountException e) {
                 System.out.println(e.getMessage());
-            }catch (AccountWithdrawException e){
+            } catch (AccountWithdrawException e) {
                 System.out.println(e.getMessage());
             }
+        }
+    }
+
+    public void transfer() {
+        Account accountSender = null;
+        Account accountRecipient = null;
+        boolean run = true;
+
+
+        while (run) {
+            try {
+                bankingSystem.listAccounts();
+                System.out.print("Digite o numero da conta do destinatario: ");
+                accountRecipient = validator.validatorNumber(sc.nextLine(), bankingSystem);
+
+                run = false;
+            } catch (AccountNumberException e) {
+                System.out.println(e.getMessage());
+            }
+        }
+
+        run = true;
+        while (run) {
+            try {
+                System.out.print("Digite o numero da conta do remetente: ");
+                accountSender = validator.validatorNumber(sc.nextLine(), bankingSystem);
+
+                System.out.printf("Digite a quantida que deseja transferir de (%s) para (%s): ", accountSender.getClient().getName(), accountRecipient.getClient().getName());
+                Double amount = validator.validatorAmount(sc.nextLine());
+                accountService.transfer(accountSender, accountRecipient, amount);
+
+                run = false;
+            } catch (AccountNumberException e) {
+                System.out.println(e.getMessage());
+            } catch (AccountTransferException e) {
+                System.out.println(e.getMessage());
+            }
+
         }
     }
 

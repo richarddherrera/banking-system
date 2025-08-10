@@ -240,7 +240,11 @@ public class Validator {
 
     }
 
-
+    public void validatorTransfer(Account accountSender, Account accountRecipient) throws AccountTransferException{
+        if (accountRecipient.getNumber() == accountSender.getNumber()){
+            throw new AccountTransferException("\n ⚠ The recipient's number cannot be the same as the sender's! \n");
+        }
+    }
 
 
 
